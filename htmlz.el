@@ -18,21 +18,8 @@
 ;;
 ;;; Code:
 
-(defun require-package (package)
-  "Install given PACKAGE if it was not installed before."
-  (if (package-installed-p package)
-      t
-    (progn
-      (unless (assoc package package-archive-contents)
-	(package-refresh-contents))
-      (package-install package))))
-
-(defun htmlz-init-dependencies ()
-  "Initialize htmlz dependencies."
-  (require-package 'websocket)
-  (require 'package)
-  (require 'browse-url)
-  (require 'websocket))
+(require 'browse-url)
+(require 'websocket)
 
 (defvar htmlz-opened-websocket nil
   "The currently open websocket.")
@@ -94,7 +81,6 @@ document.body.innerHTML = event.data;
 
 (defun htmlz-start ()
   "Startup htmlz."
-  (htmlz-init-dependencies)
   (htmlz-init-file)
   (htmlz-init-server)
   (htmlz-open-file)
@@ -106,6 +92,7 @@ document.body.innerHTML = event.data;
   (delete-file (htmlz-get-filename))
   (remove-hook 'post-command-hook 'htmlz-send-buffer-contents 'local))
 
+;;;###autoload
 (define-minor-mode htmlz-mode
   "The htmlz minor mode"
   :lighter " htmlz"
